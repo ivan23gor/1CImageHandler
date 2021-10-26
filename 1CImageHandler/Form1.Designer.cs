@@ -76,7 +76,7 @@ namespace _1CImageHandler
             this.dgvResult.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvResult.Location = new System.Drawing.Point(11, 95);
             this.dgvResult.Name = "dgvResult";
-            this.dgvResult.Size = new System.Drawing.Size(863, 84);
+            this.dgvResult.Size = new System.Drawing.Size(863, 536);
             this.dgvResult.TabIndex = 3;
             // 
             // btnSelectFile
@@ -115,7 +115,7 @@ namespace _1CImageHandler
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(887, 191);
+            this.ClientSize = new System.Drawing.Size(887, 643);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.btnSelectFile);
@@ -124,7 +124,6 @@ namespace _1CImageHandler
             this.Controls.Add(this.txtFileIn);
             this.Controls.Add(this.btnStart);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximumSize = new System.Drawing.Size(903, 230);
             this.MinimumSize = new System.Drawing.Size(903, 230);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

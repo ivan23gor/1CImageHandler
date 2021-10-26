@@ -145,6 +145,8 @@ namespace _1CImageHandler
             xlApp.DisplayAlerts = false;
 
             Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(fileNameOut);
+            xlWorkBook.CheckCompatibility = false;
+
             Excel.Worksheet xlWorkSheet = xlWorkBook.Sheets[1];
 
             xlWorkSheet.Unprotect();
@@ -160,62 +162,95 @@ namespace _1CImageHandler
                 i_max++;
 
             //Зададим ширину столбца путь к картинке
-            var SomeCell1 = (Excel.Range)xlWorkSheet.Cells[1, 11];
+            var SomeCell1 = (Excel.Range)xlWorkSheet.Cells[1, 12];
             SomeCell1.ColumnWidth = 0;
 
             //Зададим ширину столбца картинок
-            var SomeCell2 = (Excel.Range)xlWorkSheet.Cells[1, 12];
+            var SomeCell2 = (Excel.Range)xlWorkSheet.Cells[1, 13];
             SomeCell2.ColumnWidth = 15;
+
+            //Зададим ширину столбца картинок
+            var SomeCell3 = (Excel.Range)xlWorkSheet.Cells[1, 3];
+            SomeCell3.ColumnWidth = 0;
 
             //Обработка позиций
             for (int i = 1; i <= i_max; i++)
             {
-                var cellValue = (string)(xlWorkSheet.Cells[i, 11] as Excel.Range).Value;
-                if (!String.IsNullOrWhiteSpace(cellValue))
+                if(xlWorkSheet.Cells[i, 3].Value!=null)
                 {
-                    i_count++;
-                    if (i_start_pos == 0) i_start_pos = i;
+                    var cellValue2 = (decimal)(xlWorkSheet.Cells[i, 3] as Excel.Range).Value;
 
-                    //Задаем высоту строки
-                    var SomeCell = (Excel.Range)xlWorkSheet.Cells[i, 11];
-                    SomeCell.RowHeight = 40;
-
-                    //Вставляем картинку
-                    if (System.IO.File.Exists(cellValue))
+                    if (cellValue2 == 101) 
                     {
-                        Microsoft.Office.Interop.Excel.Range oRange = (Microsoft.Office.Interop.Excel.Range)xlWorkSheet.Cells[i, 12];
-                        float Left = (float)((double)oRange.Left + 1);
-                        float Top = (float)((double)oRange.Top + 1);
+                        i_count++;
+                        if (i_start_pos == 0) i_start_pos = i;
 
-                        float Height = (float)((double)oRange.Height - 2);
-                        float Witch = (float)((double)oRange.Width - 2);
+                        var cellValue = (string)(xlWorkSheet.Cells[i, 12] as Excel.Range).Value;
 
-                        xlWorkSheet.Shapes.AddPicture(cellValue, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoCTrue, Left, Top, Witch, Height);
+                        //Задаем высоту строки
+                        var SomeCell = (Excel.Range)xlWorkSheet.Cells[i, 12];
+                        SomeCell.RowHeight = 40;
+
+                        if (!String.IsNullOrWhiteSpace(cellValue))
+                        {
+                            //Вставляем картинку
+                            if (System.IO.File.Exists(cellValue))
+                            {
+                                Debug.WriteLine("image patch="+ cellValue);
+                                Microsoft.Office.Interop.Excel.Range oRange = (Microsoft.Office.Interop.Excel.Range)xlWorkSheet.Cells[i, 13];
+                                float Left = (float)((double)oRange.Left + 1);
+                                float Top = (float)((double)oRange.Top + 1);
+
+                                float Height = (float)((double)oRange.Height - 2);
+                                float Witch = (float)((double)oRange.Width - 2);
+                                //" d:\\_1C_BD\\Торговля SQL СПБ\\Foto\\1.jpg"
+                                xlWorkSheet.Shapes.AddPicture(cellValue, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoCTrue, Left, Top, Witch, Height);
+                            }
+                        }
+                        //Вставляем формулу 
+                        var SomeCellF = (Excel.Range)xlWorkSheet.Cells[i, 20];
+                        SomeCellF.FormulaR1C1 = String.Format("=R{0}C6*R{0}C19", i);
+                        i_stop_pos = i;
+                        i_sum = i + 1;
+
+                        //Вставляем формулу  =RC[-1]/RC[-6]*RC[3]
+                        var SomeCellB = (Excel.Range)xlWorkSheet.Cells[i, 16];
+                        SomeCellB.FormulaR1C1 = String.Format("=RC[-1]/RC[-8]*RC[3]", i);
+
+                        //Вставляем формулу  =RC[-1]/RC[-8]*RC[1]
+                        var SomeCellS = (Excel.Range)xlWorkSheet.Cells[i, 18];
+                        SomeCellS.FormulaR1C1 = String.Format("=RC[-1]/RC[-10]*RC[1]", i);
+
+                        i_stop_pos = i;
+                        i_sum = i + 1;
                     }
-                    //Вставляем формулу 
-                    var SomeCellF = (Excel.Range)xlWorkSheet.Cells[i, 19];
-                    SomeCellF.FormulaR1C1 = String.Format("=R{0}C5*R{0}C18", i);
-                    i_stop_pos = i;
-                    i_sum = i + 1;
                 }
             }
 
             //Вставка формулы итого ко-во
-            var SomeCellSumCount = (Excel.Range)xlWorkSheet.Cells[i_sum, 18];
-            SomeCellSumCount.FormulaR1C1 = String.Format("=SUM(R[-{0}]C:R[-1]C)", i_count);
+            ////var SomeCellSumCount = (Excel.Range)xlWorkSheet.Cells[i_sum, 19];
+            ////SomeCellSumCount.FormulaR1C1 = String.Format("=SUM(R[-{0}]C:R[-1]C)", i_count);
 
             //Вставка формулы итого сумма
             var SomeCellSumPrice = (Excel.Range)xlWorkSheet.Cells[i_sum, 19];
-            SomeCellSumPrice.FormulaR1C1 = String.Format("=SUM(R[-{0}]C:R[-1]C)", i_count);
+            SomeCellSumPrice.FormulaR1C1 = String.Format("=SUM(R[-{0}]C[1]:R[-1]C[1])", i_count);
 
-            //Вставка формулы вес
-            var SomeCellSumVes = (Excel.Range)xlWorkSheet.Cells[i_sum, 19];
-            SomeCellSumVes.FormulaR1C1 = String.Format("=SUM(R[-{0}]C:R[-1]C)", i_count);
+            //Вставка формулы итого Вес брутто =СУММ(R[-6]C[-4]:R[-2]C[-4])
+            var SomeCellSumBrutto = (Excel.Range)xlWorkSheet.Cells[i_sum+1, 20];
+            SomeCellSumBrutto.FormulaR1C1 = String.Format("=SUM(R[-{0}]C[-4]:R[-2]C[-4])", i_count+1);
+
+            //Вставка формулы итого СВМ общая =СУММ(R[-7]C[-3]:R[-3]C[-3])
+            var SomeCellSumSVM = (Excel.Range)xlWorkSheet.Cells[i_sum + 2, 20];
+            SomeCellSumSVM.FormulaR1C1 = String.Format("=SUM(R[-{0}]C[-3]:R[-3]C[-3])", i_count+2);
+            
+            //////Вставка формулы вес
+            ////var SomeCellSumVes = (Excel.Range)xlWorkSheet.Cells[i_sum, 20];
+            ////SomeCellSumVes.FormulaR1C1 = String.Format("=SUM(R[-{0}]C:R[-1]C)", i_count);
 
             //Заблокировать на редактирование//R6C18
-            xlWorkSheet.Range[String.Format("R{0}", i_start_pos), String.Format("R{0}", i_stop_pos)].Locked = false;//Выбранный разрешенный диапазон
-            xlWorkSheet.Protect(UserInterfaceOnly: true);
-            xlWorkBook.SaveAs(fileNameOut, Excel.XlFileFormat.xlWorkbookNormal);
+            ////xlWorkSheet.Range[String.Format("S{0}", i_start_pos), String.Format("S{0}", i_stop_pos)].Locked = false;//Выбранный разрешенный диапазон
+            ////xlWorkSheet.Protect(UserInterfaceOnly: true);
+            ////xlWorkBook.SaveAs(fileNameOut, Excel.XlFileFormat.xlWorkbookNormal);
 
             xlWorkBook.Close(true);
             xlApp.Quit();
