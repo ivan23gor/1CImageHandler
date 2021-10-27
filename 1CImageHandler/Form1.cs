@@ -44,7 +44,6 @@ namespace _1CImageHandler
 
         private void Form1_Load(object sender, EventArgs e)
         {
-         //   dgvResult.Visible = false;
             txtFileIn.Text = fileNameIn;
             txtFileOut.Text = fileNameOut;
             patch = AppDomain.CurrentDomain.BaseDirectory;
@@ -121,18 +120,6 @@ namespace _1CImageHandler
             return destImage;
         }
 
-        private void btnXlsLoad_Click(object sender, EventArgs e)
-        {
-          //  dgvResult.DataSource = ExcelToDataTable(fileNameIn);
-
-            //DataGridViewImageColumn img = new DataGridViewImageColumn();
-            ////dgvResult.Columns.Insert(11,img);
-            //img.HeaderText = "Image";
-            //img.Name = "img";
-            //foreach (DataGridViewRow row in dgvResult.Rows)
-            //    row.Cells[11].Value = new Bitmap(1, 1);
-        }
-
         private void Process_Start(bool close) 
         {
             if (System.IO.File.Exists(fileNameOut))
@@ -160,6 +147,13 @@ namespace _1CImageHandler
             Excel.Range usedRange = xlWorkSheet.UsedRange;
             foreach (Excel.Range row in usedRange.Rows)
                 i_max++;
+
+            //Объединим ячейки
+            xlWorkSheet.get_Range("A1:B2").Merge();
+
+            //Задаем высоту первой строки
+            var SomeCellFirstRow = (Excel.Range)xlWorkSheet.Cells[1, 1];
+            SomeCellFirstRow.RowHeight = 40;
 
             //Зададим ширину столбца путь к картинке
             var SomeCell1 = (Excel.Range)xlWorkSheet.Cells[1, 12];
@@ -227,10 +221,6 @@ namespace _1CImageHandler
                 }
             }
 
-            //Вставка формулы итого ко-во
-            ////var SomeCellSumCount = (Excel.Range)xlWorkSheet.Cells[i_sum, 19];
-            ////SomeCellSumCount.FormulaR1C1 = String.Format("=SUM(R[-{0}]C:R[-1]C)", i_count);
-
             //Вставка формулы итого сумма
             var SomeCellSumPrice = (Excel.Range)xlWorkSheet.Cells[i_sum, 19];
             SomeCellSumPrice.FormulaR1C1 = String.Format("=SUM(R[-{0}]C[1]:R[-1]C[1])", i_count);
@@ -242,15 +232,13 @@ namespace _1CImageHandler
             //Вставка формулы итого СВМ общая =СУММ(R[-7]C[-3]:R[-3]C[-3])
             var SomeCellSumSVM = (Excel.Range)xlWorkSheet.Cells[i_sum + 2, 20];
             SomeCellSumSVM.FormulaR1C1 = String.Format("=SUM(R[-{0}]C[-3]:R[-3]C[-3])", i_count+2);
-            
-            //////Вставка формулы вес
-            ////var SomeCellSumVes = (Excel.Range)xlWorkSheet.Cells[i_sum, 20];
-            ////SomeCellSumVes.FormulaR1C1 = String.Format("=SUM(R[-{0}]C:R[-1]C)", i_count);
 
-            //Заблокировать на редактирование//R6C18
-            ////xlWorkSheet.Range[String.Format("S{0}", i_start_pos), String.Format("S{0}", i_stop_pos)].Locked = false;//Выбранный разрешенный диапазон
-            ////xlWorkSheet.Protect(UserInterfaceOnly: true);
-            ////xlWorkBook.SaveAs(fileNameOut, Excel.XlFileFormat.xlWorkbookNormal);
+            ////Объединим ячейки
+            xlWorkSheet.get_Range(String.Format("A{0}:B{1}", i_max-1, i_max)).Merge();
+
+            //Задаем высоту предпоследней строки строки
+            var SomeCellEndRow = (Excel.Range)xlWorkSheet.Cells[i_max-1, 1];
+            SomeCellEndRow.RowHeight = 40;
 
             xlWorkBook.Close(true);
             xlApp.Quit();
@@ -289,25 +277,7 @@ namespace _1CImageHandler
 
                 txtFileOut.Text = Properties.Settings.Default.patchOut;
 
-               // dgvResult.DataSource = ExcelToDataTable(fileNameIn);
-
-               // DataGridViewImageColumn img = new DataGridViewImageColumn();
-
-                //dgvResult.Columns.Insert(11, img);
-                //img.HeaderText = "Image";
-                //img.Name = "img";
-
-                //foreach (DataGridViewRow row in dgvResult.Rows)
-                //   row.Cells[11].Value = new Bitmap(1, 1);
             }
-        }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            //if (checkBox1.Checked) 
-            //{
-            //    dgvResult.Visible = true;
-            //}
         }
     }
 }
