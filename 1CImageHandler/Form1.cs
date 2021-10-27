@@ -44,7 +44,7 @@ namespace _1CImageHandler
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            dgvResult.Visible = false;
+         //   dgvResult.Visible = false;
             txtFileIn.Text = fileNameIn;
             txtFileOut.Text = fileNameOut;
             patch = AppDomain.CurrentDomain.BaseDirectory;
@@ -123,14 +123,14 @@ namespace _1CImageHandler
 
         private void btnXlsLoad_Click(object sender, EventArgs e)
         {
-            dgvResult.DataSource = ExcelToDataTable(fileNameIn);
+          //  dgvResult.DataSource = ExcelToDataTable(fileNameIn);
 
-            DataGridViewImageColumn img = new DataGridViewImageColumn();
-            dgvResult.Columns.Insert(11,img);
-            img.HeaderText = "Image";
-            img.Name = "img";
-            foreach (DataGridViewRow row in dgvResult.Rows)
-                row.Cells[11].Value = new Bitmap(1, 1);
+            //DataGridViewImageColumn img = new DataGridViewImageColumn();
+            ////dgvResult.Columns.Insert(11,img);
+            //img.HeaderText = "Image";
+            //img.Name = "img";
+            //foreach (DataGridViewRow row in dgvResult.Rows)
+            //    row.Cells[11].Value = new Bitmap(1, 1);
         }
 
         private void Process_Start(bool close) 
@@ -289,25 +289,25 @@ namespace _1CImageHandler
 
                 txtFileOut.Text = Properties.Settings.Default.patchOut;
 
-                dgvResult.DataSource = ExcelToDataTable(fileNameIn);
+               // dgvResult.DataSource = ExcelToDataTable(fileNameIn);
 
-                DataGridViewImageColumn img = new DataGridViewImageColumn();
+               // DataGridViewImageColumn img = new DataGridViewImageColumn();
 
-                dgvResult.Columns.Insert(11, img);
-                img.HeaderText = "Image";
-                img.Name = "img";
+                //dgvResult.Columns.Insert(11, img);
+                //img.HeaderText = "Image";
+                //img.Name = "img";
 
-                foreach (DataGridViewRow row in dgvResult.Rows)
-                   row.Cells[11].Value = new Bitmap(1, 1);
+                //foreach (DataGridViewRow row in dgvResult.Rows)
+                //   row.Cells[11].Value = new Bitmap(1, 1);
             }
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox1.Checked) 
-            {
-                dgvResult.Visible = true;
-            }
+            //if (checkBox1.Checked) 
+            //{
+            //    dgvResult.Visible = true;
+            //}
         }
     }
 }
