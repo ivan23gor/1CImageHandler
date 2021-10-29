@@ -183,7 +183,7 @@ namespace _1CImageHandler
 
                         //Задаем высоту строки
                         var SomeCell = (Excel.Range)xlWorkSheet.Cells[i, 12];
-                        SomeCell.RowHeight = 40;
+                        SomeCell.RowHeight = 50;
 
                         if (!String.IsNullOrWhiteSpace(cellValue))
                         {
@@ -239,6 +239,11 @@ namespace _1CImageHandler
             //Задаем высоту предпоследней строки строки
             var SomeCellEndRow = (Excel.Range)xlWorkSheet.Cells[i_max-1, 1];
             SomeCellEndRow.RowHeight = 40;
+
+            //Заблокировать на редактирование//R6C18
+            xlWorkSheet.Range[String.Format("S{0}", i_start_pos), String.Format("S{0}", i_stop_pos)].Locked = false;//Выбранный разрешенный диапазон
+            xlWorkSheet.Protect(UserInterfaceOnly: true);
+            xlWorkBook.SaveAs(fileNameOut, Excel.XlFileFormat.xlWorkbookNormal);
 
             xlWorkBook.Close(true);
             xlApp.Quit();
