@@ -183,7 +183,7 @@ namespace _1CImageHandler
 
                         //Задаем высоту строки
                         var SomeCell = (Excel.Range)xlWorkSheet.Cells[i, 12];
-                        SomeCell.RowHeight = 50;
+                        SomeCell.RowHeight = 65;
 
                         if (!String.IsNullOrWhiteSpace(cellValue))
                         {
